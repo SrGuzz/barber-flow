@@ -26,6 +26,14 @@ jobs:
         php artisan view:cache
         php artisan key:generate
 
+    - name: Criar arquivo .env para produção
+      run: echo "${{ secrets.ENV_PROD }}" > .env
+
+    - name: Mary install
+      run: |
+        composer require robsontenorio/mary
+        php artisan mary:install
+
     - name: Build assets
       run: |
         npm install
