@@ -32,7 +32,6 @@ jobs:
     - name: Mary install
       run: |
         composer require robsontenorio/mary
-        php artisan mary:install
 
     - name: Build assets
       run: |
