@@ -18,6 +18,9 @@ jobs:
       with:
         php-version: '8.2'
 
+    - name: Criar arquivo .env para produção
+      run: echo "${{ secrets.ENV_PROD }}" > .env
+
     - name: Install dependencies
       run: |
         composer install --no-dev --optimize-autoloader
@@ -25,10 +28,7 @@ jobs:
         php artisan route:cache
         php artisan view:cache
         php artisan key:generate
-
-    - name: Criar arquivo .env para produção
-      run: echo "${{ secrets.ENV_PROD }}" > .env
-
+    
     - name: Mary install
       run: |
         composer require robsontenorio/mary
