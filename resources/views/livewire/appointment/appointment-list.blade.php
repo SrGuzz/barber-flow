@@ -1,7 +1,6 @@
 <div>
     <x-header title="Serviços disponíveis" separator />
     @if (auth()->user()->favorites->count())
-        
         <p class="text-xl mb-5 font-bold"> Favoritos </p>
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-y-10 lg:gap-y-5">
             @foreach (auth()->user()->favorites as $favorite)
