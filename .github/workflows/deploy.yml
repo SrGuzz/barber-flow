@@ -32,24 +32,28 @@ jobs:
           SFTP_PASS: ${{ secrets.SFTP_PASSWORD }}
           REMOTE_PATH: /home/storage/2/8d/40/barberflowtecnol1
         run: |
+          # Garantir que variáveis estão presentes
+          if [[ -z "$SFTP_HOST" || -z "$SFTP_USER" || -z "$SFTP_PASS" ]]; then
+            echo "❌ Variáveis de ambiente SFTP estão ausentes."
+            exit 1
+          fi
+
           while read file; do
-            # Ignora arquivos excluídos ou vazios
             if [[ ! -f "$file" ]]; then
-              echo "Ignorando (não é arquivo): $file"
+              echo "Ignorando (não é arquivo local): $file"
               continue
             fi
 
-            # Define destino remoto com base na estrutura local
             TARGET_DIR="$REMOTE_PATH/$(dirname "$file")"
             DEST="$REMOTE_PATH/$file"
 
             echo "Enviando: $file → $DEST"
 
-            # Cria o diretório de destino no servidor remoto (ignora erro se já existir)
+            echo "sshpass -p [oculto] ssh $SFTP_USER@$SFTP_HOST mkdir -p \"$TARGET_DIR\""
             sshpass -p "$SFTP_PASS" ssh -o StrictHostKeyChecking=no "$SFTP_USER@$SFTP_HOST" "mkdir -p \"$TARGET_DIR\""
 
-            # Gera comando em batch e executa via sftp
             echo "put \"$file\" \"$DEST\"" > sftp_batch.txt
             sshpass -p "$SFTP_PASS" sftp -o StrictHostKeyChecking=no -b sftp_batch.txt "$SFTP_USER@$SFTP_HOST"
 
           done < changed_files.txt
+
