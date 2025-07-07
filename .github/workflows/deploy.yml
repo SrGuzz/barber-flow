@@ -13,7 +13,7 @@ jobs:
       - name: 📥 Checkout do código
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2  # necessário para obter o commit anterior
+          fetch-depth: 2  # necessário para comparar com commit anterior
 
       - name: 🧪 Detectar arquivos modificados
         id: changed-files
@@ -33,25 +33,23 @@ jobs:
           REMOTE_PATH: /home/storage/2/8d/40/barberflowtecnol1
         run: |
           while read file; do
-            if [[ $file == public/* ]]; then
-              TARGET_DIR="$REMOTE_PATH/public_html/$(dirname ${file#public/})"
-              DEST="$REMOTE_PATH/public_html/${file#public/}"
-            elif [[ $file == barber_flow/* ]]; then
-              TARGET_DIR="$REMOTE_PATH/barber_flow/$(dirname ${file#barber_flow/})"
-              DEST="$REMOTE_PATH/barber_flow/${file#barber_flow/}"
-            else
-              echo "Ignorando: $file"
+            # Ignora arquivos excluídos ou vazios
+            if [[ ! -f "$file" ]]; then
+              echo "Ignorando (não é arquivo): $file"
               continue
             fi
 
+            # Define destino remoto com base na estrutura local
+            TARGET_DIR="$REMOTE_PATH/$(dirname "$file")"
+            DEST="$REMOTE_PATH/$file"
+
             echo "Enviando: $file → $DEST"
 
-            # Cria diretório remoto (ignora erro se já existir)
+            # Cria o diretório de destino no servidor remoto (ignora erro se já existir)
             sshpass -p "$SFTP_PASS" ssh -o StrictHostKeyChecking=no "$SFTP_USER@$SFTP_HOST" "mkdir -p \"$TARGET_DIR\""
 
-            # Cria arquivo de batch temporário
+            # Gera comando em batch e executa via sftp
             echo "put \"$file\" \"$DEST\"" > sftp_batch.txt
-
-            # Executa envio via sftp
             sshpass -p "$SFTP_PASS" sftp -o StrictHostKeyChecking=no -b sftp_batch.txt "$SFTP_USER@$SFTP_HOST"
+
           done < changed_files.txt
