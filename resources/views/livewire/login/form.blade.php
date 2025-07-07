@@ -1,5 +1,8 @@
 <div class="relative justify-content bg-gray-50 p-4 rounded-lg shadow-lg ">
-       
+    <div class="">
+        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-3/5 m-[0_auto]">
+    </div>
+    
     <x-form wire:submit="login" >
  
         {{-- SIGN IN GOOGLE --}}

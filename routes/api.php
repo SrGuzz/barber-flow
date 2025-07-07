@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Mail;
 use Twilio\TwiML\MessagingResponse;
 
 Route::post('/webhook/whatsapp', function (Request $request) {
-    ds(1);
     $from = $request->input('From');               
     $body = trim($request->input('Body'));         
 

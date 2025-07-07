@@ -2,7 +2,7 @@
     <!-- Navbar -->
     <header class="bg-[#0D1117] shadow-md sticky top-0 z-50 w-full">
         <div class="max-w-7xl mx-auto flex justify-between items-center px-4 py-3">
-            <div class="text-2xl font-bold text-[#CEAD77]">
+            <div class="">
                 <img src="{{ asset('images/logo3.png') }}" alt="Logo" class="w-3/6 inline-block mr-2">
             </div>
             <nav class="space-x-4 text-sm font-medium">

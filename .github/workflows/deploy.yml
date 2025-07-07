@@ -1,64 +1,39 @@
-name: Deploy Laravel via FTP
+name: 🚀 Deploy via FTP
 
 on:
   push:
     branches:
-      - main
+      - main  # ou outra branch usada para produção
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+      - name: 📥 Checkout do repositório
+        uses: actions/checkout@v3
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.2'
+      - name: 🔍 Detectar arquivos modificados
+        id: files
+        run: |
+          echo "CHANGED_FILES<<EOF" >> $GITHUB_ENV
+          git diff --name-only ${{ github.event.before }} ${{ github.sha }} >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
-    - name: Criar arquivo .env para produção
-      run: echo "${{ secrets.ENV_PROD }}" > .env
+      - name: 📡 Conectar e enviar arquivos alterados por FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./
+          server-dir: /
+          exclude: |
+            **/.git*
+            **/node_modules/**
+            **/vendor/**
+            **/storage/**
+          dry-run: false
 
-    - name: Install dependencies
-      run: |
-        composer install --no-dev --optimize-autoloader
-        php artisan config:cache
-        php artisan route:cache
-        php artisan view:cache
-        php artisan key:generate
-    
-    - name: Mary install
-      run: |
-        composer require robsontenorio/mary
-
-    - name: Build assets
-      run: |
-        npm install
-        npm run build
-
-    - name: Upload via FTP - Laravel (fora do public)
-      uses: samkirkland/ftp-deploy-action@4.3.0
-      with:
-        server: ${{ secrets.FTP_HOST }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        server-dir: ${{ secrets.FTP_TARGET }}/barber-flow/
-        local-dir: ./
-        exclude: |
-          **/public/**
-          **/node_modules/**
-          **/.git/**
-          **/.github/**
-          **/tests/**
-          **/.env.example
-
-    - name: Upload via FTP - public_html (apenas a pasta public)
-      uses: samkirkland/ftp-deploy-action@4.3.0
-      with:
-        server: ${{ secrets.FTP_HOST }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        server-dir: ${{ secrets.FTP_TARGET }}/public_html/
-        local-dir: ./public/
+      - name: ✅ Exibir arquivos alterados (debug)
+        run: echo "${{ env.CHANGED_FILES }}"
