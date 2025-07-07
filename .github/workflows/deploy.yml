@@ -1,3 +1,30 @@
+name: 🚀 Deploy incremental via SFTP
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout do código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # necessário para obter o commit anterior
+
+      - name: 🧪 Detectar arquivos modificados
+        id: changed-files
+        run: |
+          echo "Detectando arquivos modificados no último commit..."
+          git diff --name-only HEAD^ HEAD > changed_files.txt
+          cat changed_files.txt
+
+      - name: 📦 Instalar cliente SSH
+        run: sudo apt-get install -y sshpass
+
       - name: 📡 Enviar arquivos modificados via SFTP
         env:
           SFTP_HOST: ${{ secrets.SFTP_HOST }}
