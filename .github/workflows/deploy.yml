@@ -1,30 +1,3 @@
-name: 🚀 Deploy incremental via SFTP
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: 📥 Checkout do código
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 2  # necessário para obter o commit anterior
-
-      - name: 🧪 Detectar arquivos modificados
-        id: changed-files
-        run: |
-          echo "Detectando arquivos modificados no último commit..."
-          git diff --name-only HEAD^ HEAD > changed_files.txt
-          cat changed_files.txt
-
-      - name: 📦 Instalar cliente SSH
-        run: sudo apt-get install -y sshpass
-
       - name: 📡 Enviar arquivos modificados via SFTP
         env:
           SFTP_HOST: ${{ secrets.SFTP_HOST }}
@@ -33,7 +6,6 @@ jobs:
           REMOTE_PATH: /home/storage/2/8d/40/barberflowtecnol1
         run: |
           while read file; do
-            # Ajustar o destino com base no diretório local
             if [[ $file == public/* ]]; then
               TARGET_DIR="$REMOTE_PATH/public_html/$(dirname ${file#public/})"
               DEST="$REMOTE_PATH/public_html/${file#public/}"
@@ -47,8 +19,12 @@ jobs:
 
             echo "Enviando: $file → $DEST"
 
-            # Cria o diretório de destino remoto (ignora erro se já existir)
-            sshpass -p "$SFTP_PASS" ssh -o StrictHostKeyChecking=no $SFTP_USER@$SFTP_HOST "mkdir -p \"$TARGET_DIR\""
+            # Cria diretório remoto (ignora erro se já existir)
+            sshpass -p "$SFTP_PASS" ssh -o StrictHostKeyChecking=no "$SFTP_USER@$SFTP_HOST" "mkdir -p \"$TARGET_DIR\""
 
-            # Envia o arquivo
-            sshpass -p "$SFTP_PASS" sftp -o StrictHostKeyChecking=no $SFTP_USER@$SFTP_HOST <<EOF put "$file" "$DEST" EOF done < changed_files.txt
+            # Cria arquivo de batch temporário
+            echo "put \"$file\" \"$DEST\"" > sftp_batch.txt
+
+            # Executa envio via sftp
+            sshpass -p "$SFTP_PASS" sftp -o StrictHostKeyChecking=no -b sftp_batch.txt "$SFTP_USER@$SFTP_HOST"
+          done < changed_files.txt
