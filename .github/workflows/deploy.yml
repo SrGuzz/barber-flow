@@ -21,7 +21,7 @@ jobs:
           echo "EOF" >> $GITHUB_ENV
 
       - name: 📡 Conectar e enviar arquivos alterados por FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4
+        uses: samkirkland/ftp-deploy-action@4.3.0
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
