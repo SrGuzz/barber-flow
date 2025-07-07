@@ -1,39 +1,54 @@
-name: 🚀 Deploy via FTP
+name: 🚀 Deploy incremental via SFTP
 
 on:
   push:
     branches:
-      - main  # ou outra branch usada para produção
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout do repositório
-        uses: actions/checkout@v3
-
-      - name: 🔍 Detectar arquivos modificados
-        id: files
-        run: |
-          echo "CHANGED_FILES<<EOF" >> $GITHUB_ENV
-          git diff --name-only ${{ github.event.before }} ${{ github.sha }} >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-
-      - name: 📡 Conectar e enviar arquivos alterados por FTP
-        uses: samkirkland/ftp-deploy-action@4.3.0
+      - name: 📥 Checkout do código
+        uses: actions/checkout@v4
         with:
-          server: ${{ secrets.FTP_HOST }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./
-          server-dir: /
-          exclude: |
-            **/.git*
-            **/node_modules/**
-            **/vendor/**
-            **/storage/**
-          dry-run: false
+          fetch-depth: 2  # necessário para obter o commit anterior
 
-      - name: ✅ Exibir arquivos alterados (debug)
-        run: echo "${{ env.CHANGED_FILES }}"
+      - name: 🧪 Detectar arquivos modificados
+        id: changed-files
+        run: |
+          echo "Detectando arquivos modificados no último commit..."
+          git diff --name-only HEAD^ HEAD > changed_files.txt
+          cat changed_files.txt
+
+      - name: 📦 Instalar cliente SSH
+        run: sudo apt-get install -y sshpass
+
+      - name: 📡 Enviar arquivos modificados via SFTP
+        env:
+          SFTP_HOST: ${{ secrets.SFTP_HOST }}
+          SFTP_USER: ${{ secrets.SFTP_USERNAME }}
+          SFTP_PASS: ${{ secrets.SFTP_PASSWORD }}
+          REMOTE_PATH: /home/storage/2/8d/40/barberflowtecnol1
+        run: |
+          while read file; do
+            # Ajustar o destino com base no diretório local
+            if [[ $file == public/* ]]; then
+              TARGET_DIR="$REMOTE_PATH/public_html/$(dirname ${file#public/})"
+              DEST="$REMOTE_PATH/public_html/${file#public/}"
+            elif [[ $file == barber_flow/* ]]; then
+              TARGET_DIR="$REMOTE_PATH/barber_flow/$(dirname ${file#barber_flow/})"
+              DEST="$REMOTE_PATH/barber_flow/${file#barber_flow/}"
+            else
+              echo "Ignorando: $file"
+              continue
+            fi
+
+            echo "Enviando: $file → $DEST"
+
+            # Cria o diretório de destino remoto (ignora erro se já existir)
+            sshpass -p "$SFTP_PASS" ssh -o StrictHostKeyChecking=no $SFTP_USER@$SFTP_HOST "mkdir -p \"$TARGET_DIR\""
+
+            # Envia o arquivo
+            sshpass -p "$SFTP_PASS" sftp -o StrictHostKeyChecking=no $SFTP_USER@$SFTP_HOST <<EOF put "$file" "$DEST" EOF done < changed_files.txt
