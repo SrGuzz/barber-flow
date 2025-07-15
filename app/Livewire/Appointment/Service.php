@@ -362,7 +362,7 @@ class Service extends Component
 
     protected function send_whatsapp($appointments)
     {
-        $message = "*Olá, {$appointments[0]->user->name}!* 👋\n\n";
+        $message = "*Olá, {$appointments[0]->user->name}!* 👋\n";
         $message .= "✨ *Seu agendamento foi confirmado!* Confira os detalhes abaixo:\n\n";
 
         foreach ($appointments as $index => $appointment) {
@@ -387,7 +387,8 @@ class Service extends Component
 
         $twilio = new TwilioService;
 
-        $to = env('TWILIO_WHATSAPP_TO');
+        $to = preg_replace('/\D/', '', $appointment->user->phone);
+	    $to = 'whatsapp:+55' . preg_replace('/^(\d{2})9/', '$1', $to);
 
         $twilio->sendWhatsAppMessage($to, $message);
     }

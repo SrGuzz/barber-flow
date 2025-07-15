@@ -14,29 +14,55 @@ class ConfirmAppointments extends Command
 
     public function handle(TwilioService $twilio)
     {
-        $amanha = Carbon::tomorrow()->startOfDay();
-        $fim = $amanha->copy()->endOfDay();
+        $date = Carbon::now()->addDay();
+        
+        $users = Appointment::query()
+            ->with(['user', 'service', 'barber'])
+            ->whereDate('start',$date)
+            ->get()
+            ->groupBy(function ($appointment){
+                return $appointment->user->id;
+            });
 
-        $appointments = Appointment::with(['user', 'service', 'barber'])
-            ->whereBetween('start', [$amanha, $fim])
-            ->get();
+        foreach($users as $user)
+        {
+            $message = "*Olá, {$user[0]->user->name}!* 👋\n";
+            $message .= "Estamos passando para *confirmar seu agendamento* para amanhã!\n\n";
+            
+            foreach($user as $index => $appointment)
+            {
+                $data = Carbon::parse($appointment->start)->translatedFormat('d \d\e F \d\e Y');
+                $hora = Carbon::parse($appointment->start)->format('H:i');
+                $service_number = $index + 1;
 
-        foreach ($appointments as $appointment) {
-            $data = Carbon::parse($appointment->start)->translatedFormat('d \d\e F \d\e Y');
-            $hora = Carbon::parse($appointment->start)->format('H:i');
+                $message .= "💇‍♂️ *Serviço {$service_number}:* {$appointment->service->name}\n";
+                $message .= "📅 *Data:* {$data}\n";
+                $message .= "⏰ *Horário:* {$hora}\n";
+                $message .= "✂️ *Profissional:* {$appointment->barber->name}\n";
+                $message .= "\n─────────────────────────\n\n";
+            }
 
-            $mensagem = "*Olá, {$appointment->user->name}!* 👋\n\n";
-            $mensagem .= "Estamos passando para *confirmar seu agendamento* para amanhã!\n\n";
-            $mensagem .= "📅 *Data:* {$data}\n";
-            $mensagem .= "⏰ *Horário:* {$hora}\n";
-            $mensagem .= "💇‍♂️ *Serviço:* {$appointment->service->name}\n";
-            $mensagem .= "💰 *Preço:* R$ " . number_format($appointment->service->price, 2, ',', '.') . "\n";
-            $mensagem .= "✂️ *Profissional:* {$appointment->barber->name}\n\n";
-            $mensagem .= "Responda com *1* para confirmar ou *2* para cancelar.";
+            $total = $this->get_total_price($user);
+            $message .= "🧾 *Total:* _R$ {$total}_\n\n";
+            $message .= "Responda com *1* para confirmar ou *2* para cancelar.\n";
+            $message .= "🙏 Aguardamos seu retorno! Até breve. ✂️";
 
-            $twilio->sendWhatsAppMessage(env('TWILIO_WHATSAPP_TO'), $mensagem);
+            $to = preg_replace('/\D/', '', $user[0]->user->phone);
+            $to = 'whatsapp:+55' . preg_replace('/^(\d{2})9/', '$1', $to);
+            
+            $twilio->sendWhatsAppMessage($to, $message);
+        }
+        $this->info("Mensagens de confirmação enviadas com sucesso.");
+    }
+
+    public function get_total_price($user)
+    {
+        $price = 0;
+
+        foreach ($user as $appointment) {
+            $price += $appointment->service->price;
         }
 
-        $this->info("Mensagens de confirmação enviadas com sucesso.");
+        return number_format($price, 2, ',', '.'); // Ex: 1500.5 → 1.500,50
     }
 }

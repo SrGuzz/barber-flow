@@ -21,38 +21,43 @@ Route::post('/webhook/whatsapp', function (Request $request) {
 
     $phone = "($ddd) 9$resto";
 
-    $appointment = Appointment::whereHas('user', function ($query) use ($phone) {
+    $appointments = Appointment::whereHas('user', function ($query) use ($phone) {
         $query->where('phone', $phone);
     })
     ->whereNull('confirmed_at')
     ->latest()
-    ->first();
+    ->get();
 
     $msg = new MessagingResponse();
 
-    if ($appointment) {
+    if ($appointments) {
         if ($body === '1') 
         {
-            $appointment->update(['confirmed_at' => now()]);
+            foreach($appointments as $appointment)
+            {
+                $appointment->update(['confirmed_at' => now()]);
+                Mail::to($appointment->user->email)->send(new Confirm($appointment));
+            }
             
-            Mail::to($appointment->user->email)->send(new Confirm($appointment));
 
             $msg->message(
                 "*✅ Agendamento Confirmado!*\n\n" .
                 "Seu horário foi confirmado com sucesso! ✨\n\n" .
-                "💇‍♂️ *Serviço:* {$appointment->service->name}\n" .
-                "🧑‍🔧 *Profissional:* {$appointment->barber->name}\n\n" .
                 "Estamos te esperando! 😄\nSe tiver qualquer dúvida, é só nos chamar.\n\n" .
                 "*Obrigado por escolher nossos serviços!* 💈"
             );
         } 
         elseif ($body === '2') 
         {
-            $appointment->delete(); 
-            Mail::to($appointment->user->email)->send(new Cancel($appointment));
+            foreach($appointments as $appointment)
+            {
+                $appointment->delete(); 
+                Mail::to($appointment->user->email)->send(new Cancel($appointment));
+            }
+
             $msg->message(
-                "*❌ Agendamento Cancelado!*\n\n" .
-                "Recebemos sua solicitação de cancelamento para o serviço *{$appointment->service->name}* e tudo foi atualizado com sucesso. 🗓️\n\n" .
+                "*❌ Agendamentos Cancelados!*\n\n" .
+                "Recebemos sua solicitação de cancelamento para os serviços a serem confirmados e tudo foi atualizado com sucesso. 🗓️\n\n" .
                 "Esperamos poder te atender em uma próxima oportunidade! 😊\n\n" .
                 "Se quiser reagendar ou tirar alguma dúvida, é só nos chamar. 📲\n\n" .
                 "*Agradecemos por considerar nossos serviços!* 💈"
