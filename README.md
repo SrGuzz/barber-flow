@@ -1,4 +1,4 @@
-<img src="Artefatos/logo.png" alt="Descrição da Imagem" width="200" height="200" style="display: block; margin: auto;">
+<img src="public/images/logo2.png" alt="Descrição da Imagem" width="200" height="200" style="display: block; margin: 0 auto;">
 
 # Barber Flow
 O **Barber Flow** é uma solução completa para o controle financeiro e operacional do seu estabelecimento. Com ele, você acompanha de forma detalhada o faturamento diário, semanal e mensal, além de visualizar os ganhos individuais de cada barbeiro. O software permite diferenciar cortes pagos avulsamente daqueles realizados por clientes que aderiram ao plano de mensalidade, garantindo uma visão clara sobre a lucratividade de cada modalidade.  
