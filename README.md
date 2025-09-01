@@ -5,14 +5,6 @@ O **Barber Flow** é uma solução completa para o controle financeiro e operaci
 
 Além disso, o sistema organiza todas as movimentações financeiras da barbearia, proporcionando relatórios precisos sobre receitas e despesas. Dessa forma, você toma decisões estratégicas com base em dados confiáveis, otimizando os ganhos e garantindo um fluxo de caixa saudável. Com uma interface intuitiva e acessível, sua gestão se torna mais eficiente, permitindo que você foque no que realmente importa: oferecer um atendimento de qualidade aos seus clientes.
 
-## Professores responsáveis
-
-* João Paulo Carneiro Aramuni
-* Danilo de Quadros Maia Filho
-* Ramon Lacerda Marques
-
----
-
 ## Instruções de Utilização
 
 Para começar a usar o **Barber Flow**, siga os passos abaixo. Certifique-se de ter os pré-requisitos instalados antes de iniciar o processo.
