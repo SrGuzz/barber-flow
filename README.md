@@ -1,66 +1,77 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<img src="Artefatos/logo.png" alt="Descrição da Imagem" width="200" height="200" style="display: block; margin: auto;">
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Barber Flow
+O **Barber Flow** é uma solução completa para o controle financeiro e operacional do seu estabelecimento. Com ele, você acompanha de forma detalhada o faturamento diário, semanal e mensal, além de visualizar os ganhos individuais de cada barbeiro. O software permite diferenciar cortes pagos avulsamente daqueles realizados por clientes que aderiram ao plano de mensalidade, garantindo uma visão clara sobre a lucratividade de cada modalidade.  
 
-## About Laravel
+Além disso, o sistema organiza todas as movimentações financeiras da barbearia, proporcionando relatórios precisos sobre receitas e despesas. Dessa forma, você toma decisões estratégicas com base em dados confiáveis, otimizando os ganhos e garantindo um fluxo de caixa saudável. Com uma interface intuitiva e acessível, sua gestão se torna mais eficiente, permitindo que você foque no que realmente importa: oferecer um atendimento de qualidade aos seus clientes.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Alunos integrantes da equipe
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+* Albert Luis Pereira de Jesus
+* Arthur Modesto Couto
+* Bernardo Carvalho Denucci Mercado
+* Gabriel Figueiredo Cayres Burdignon
+* Matheus Santos Ribeiro
+* Vinicius Augusto Ribeiro Mazzoli
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Professores responsáveis
 
-## Learning Laravel
+* João Paulo Carneiro Aramuni
+* Danilo de Quadros Maia Filho
+* Ramon Lacerda Marques
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Instruções de Utilização
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Para começar a usar o **Barber Flow**, siga os passos abaixo. Certifique-se de ter os pré-requisitos instalados antes de iniciar o processo.
 
-## Laravel Sponsors
+### Pré-requisitos
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Antes de instalar o **Barber Flow**, você precisará dos seguintes softwares:
 
-### Premium Partners
+* **PHP:** O PHP é a linguagem de programação que o Barber Flow utiliza no backend.
+* **Laravel:** O Laravel é o framework PHP usado para o desenvolvimento do backend do sistema.
+* **Laragon (Recomendado):** O Laragon é um ambiente de desenvolvimento local completo que facilita a instalação e gerenciamento de PHP, MySQL, Nginx/Apache, entre outros. Ele simplifica muito a configuração do ambiente.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### Instalação e Execução
 
-## Contributing
+1.  **Clone o Projeto do GitHub:**
+    Primeiramente, você precisará obter o código-fonte do Barber Flow. Abra seu terminal ou prompt de comando e execute o seguinte comando para clonar o repositório do GitHub:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+    ```bash
+    git clone https://github.com/ICEI-PUC-Minas-PMGES-TI/pmg-es-2025-1-ti3-9577100-barber-flow.git
+    ```
 
-## Code of Conduct
+2.  **Navegue até o Diretório do Projeto:**
+    Após clonar o repositório, navegue até a pasta principal do projeto. Dentro do repositório clonado, você encontrará o diretório `Codigo/barber-flow`. Acesse-o com o comando:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+    ```bash
+    cd Codigo/barber-flow
+    ```
 
-## Security Vulnerabilities
+3.  **Instale as Dependências do Frontend:**
+    O Barber Flow utiliza o `npm` para gerenciar as dependências do frontend. Certifique-se de ter o Node.js e o npm instalados. No diretório `Codigo/barber-flow`, execute:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+    ```bash
+    npm install
+    ```
+    Este comando baixará todas as bibliotecas e pacotes JavaScript necessários para a interface do usuário.
 
-## License
+4.  **Inicie o Servidor de Desenvolvimento do Frontend:**
+    Para compilar e servir os arquivos do frontend, execute o seguinte comando:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+    ```bash
+    npm run dev
+    ```
+    Isso iniciará um servidor de desenvolvimento que observa as mudanças nos arquivos do frontend e os recompila automaticamente.
+
+5.  **Inicie o Servidor do Backend (Laravel):**
+    Com o PHP e o Laravel configurados (idealmente via Laragon), você pode iniciar o servidor de desenvolvimento do backend. Ainda no diretório `Codigo/barber-flow`, execute:
+
+    ```bash
+    php artisan serve
+    ```
+    Este comando iniciará o servidor PHP em `http://127.0.0.1:8000` (ou uma porta similar), permitindo que o frontend se comunique com o backend.
+
+Ao seguir esses passos, seu sistema **Barber Flow** estará pronto para uso. Se tiver alguma dúvida ou encontrar dificuldades, não hesite em entrar em contato com a equipe de desenvolvimento.
