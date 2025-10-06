@@ -21,6 +21,10 @@ class UserMiddleware
             return $next($request);
         }
         
-        abort(403, 'Acesso Negado!');
+        // Sugestão: usar abort_if/abort_unless com trans() para mensagens localizáveis.
+        // Benefício: facilita tradução e testes, além de manter consistência nas respostas.
+        // Sugestão: considerar retornar uma resposta JSON padronizada para APIs (aceitar header X).
+        // Benefício: melhora UX para clientes API e facilita debugging.
+        abort(403, trans('auth.denied', [], 'pt-BR'));
     }
 }

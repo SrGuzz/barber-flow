@@ -27,11 +27,16 @@ class GoogleController extends Controller
         
         $response = Socialite::driver('google')->user();
 
+        // Sugestão: mover a lógica de criação/atualização de usuário para um UserService.
+        // Justificativa: separa responsabilidade do controller e facilita teste unitário da lógica de negócio.
+
         //verifica se ja existe
         $user = User::where('email', $response->getEmail())->first();
 
         //se ja existe
         if($user && !$user->google_id){
+            // Sugestão: padronizar mensagens de erro via localization (trans()).
+            // Benefício: facilita tradução e manutenção das mensagens de usuário.
             return redirect()->route('login')->withErrors([
                 'email' => 'Já existe uma conta com esse e-mail.'
             ]);
@@ -43,6 +48,9 @@ class GoogleController extends Controller
             ['password' => bcrypt(Str::random(16))],
         );
 
+        // Sugestão: use updateOrCreate com campos explícitos para evitar race conditions em alto tráfego.
+        // Benefício: operação atômica reduz chances de duplicação ou inconsistência.
+
         $user->update([
             'google_id' => $response->getId()
         ]);
@@ -51,6 +59,8 @@ class GoogleController extends Controller
             event(new Registered(($user)));
         }
 
+        // Sugestão: use loginUsingId ou autenticação via guard para clareza e possível configuração de remember.
+        // Benefício: torna intenção explícita e fácil de ajustar para múltiplos guards.
         Auth::login($user, remember: true);
         return redirect()->intended('/users');
 
