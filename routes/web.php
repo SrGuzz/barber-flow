@@ -37,11 +37,18 @@ Route::middleware('guest')->group(function(){
     Route::post('/reset-password', [ResetPassword::class, 'resetPassword'])->name('password.update');
 
     Route::get('/auth/google', function () {
+        // Sugestão: delegar redirecionamento ao GoogleController::redirect para manter lógica centralizada.
+        // Benefício: facilita adicionar logs, válidação de provider e testes sem closures anônimos nas rotas.
         return Socialite::driver('google')->redirect();
     })->name('auth.google');
 
     Route::get('/auth/google/callback', function () {
+        // Sugestão: mover lógica de callback para um Controller dedicado (ex: GoogleController@callback).
+        // Benefício: evita closures nas rotas, melhora separação de responsabilidades e facilita testes.
         $googleUser = Socialite::driver('google')->stateless()->user();
+
+        // Sugestão: validar e sanitizar dados do provedor antes de persistir.
+        // Benefício: protege contra dados inesperados e melhora segurança do banco.
 
         $user = User::updateOrCreate(
             ['email' => $googleUser->getEmail()],   
@@ -55,6 +62,8 @@ Route::middleware('guest')->group(function(){
 
         Auth::login($user);
 
+        // Sugestão: usar named route ou config para redirecionamento pós-login ao invés de rota hardcoded.
+        // Benefício: facilita mudança de fluxo sem alterar código em múltiplos lugares.
         return redirect()->route('profile'); // ajuste conforme sua rota
     });
 });
@@ -68,8 +77,12 @@ Route::middleware('auth')->group(function(){
     
     Route::middleware([UserMiddleware::class])->group(function(){
         Route::get('/users', UserList::class);
+        // Sugestão: adicionar ->name('users.index') e seguir convensão RESTful para facilitar geração de URLs.
+        // Benefício: consistência e interoperabilidade com helpers e políticas.
         Route::get('/finance', FinanceList::class);
         Route::get('/services', ServicesList::class);
+        // Sugestão: usar verbo POST/GET adequado e nomear rota como 'finance.reports.export' para clareza.
+        // Benefício: segue padrões REST e documenta intenção da rota.
         Route::get('/relatory', [FinanceList::class, 'export_relatory'])->name('relatory');
         Route::get('/calendar', View::class); 
     });
